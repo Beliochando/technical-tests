@@ -5,7 +5,7 @@ export function PokeCard({ name, isActive, badges }) {
   return (
     <div
       className={`rounded-lg shadow p-4 hover:scale-105 transition transform
-        ${isActive ? "bg-grape-200 text-white" : "bg-white"}
+        ${isActive ? "bg-grape-200 text-white" : "bg-white/80"}
         relative
       `}
     >

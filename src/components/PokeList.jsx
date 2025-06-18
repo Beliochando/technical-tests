@@ -57,8 +57,11 @@ export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
       {pokemonWithBadges.map((p) => (
         <div
           key={p.name}
+          ref={(el) => {
+            refs.current[p.name] = el;
+          }}
           className={`cursor-pointer rounded-lg transition
-            ${selectedPokemon === p.name ? "bg-blue-400/60" : "hover:bg-blue-100/50"}`}
+          ${selectedPokemon === p.name ? "bg-blue-400/60" : "hover:bg-blue-100/50"}`}
           onClick={() => onSelectPokemon(p.name)}
         >
           <PokeCard

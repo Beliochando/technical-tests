@@ -51,7 +51,7 @@ export function Home() {
           {/* Detalle del Pokémon a la derecha */}
           {selectedPokemon && (
             <div
-              className="w-2/3 overflow-y-auto bg-white/60 rounded-lg p-6 scrollbar-custom"
+              className="w-2/3 overflow-y-auto bg-white/70 rounded-lg p-6 scrollbar-custom"
               style={{ height: "100%" }}
               key={selectedPokemon}
             >
