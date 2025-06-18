@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllMoves } from "../services/pokeapi";
 import { useCapitalizeFirstLetter } from "../hooks/useCapitalizeFirstLetter";
 import { MdFlashOn } from "react-icons/md";
+import { FiChevronDown } from "react-icons/fi";
 
 export function PokeFilter({ onMoveSelect, selectedMove }) {
   const [moves, setMoves] = useState([]);
@@ -20,18 +21,29 @@ export function PokeFilter({ onMoveSelect, selectedMove }) {
 
   return (
     <div className="mb-4 w-full">
-      <label className="block font-semibold mb-2 text-grape-500 flex items-center gap-2">
+      <label className="font-semibold mb-2 text-grape-500 flex items-center gap-2">
         <MdFlashOn className="text-pumpkin-400" />
         Select a move to see which Pokémon can learn it
       </label>
 
       <div className="relative w-full">
-        <button onClick={() => setOpen(!open)} className="btn-select">
-          {selectedMove ? capitalizeFirstLetter(selectedMove) : "Choose a move"}
+        <button
+          onClick={() => setOpen(!open)}
+          className="btn-select flex items-center justify-between gap-2"
+        >
+          <span className="flex-1 text-left">
+            {selectedMove
+              ? capitalizeFirstLetter(selectedMove)
+              : "Choose a move"}
+          </span>
+          <FiChevronDown
+            className={`text-soft-400 ${open ? "rotate-180" : ""}`}
+            style={{ verticalAlign: "middle" }}
+          />
         </button>
 
         {open && (
-          <ul className="absolute mt-1 w-full overflow-y-auto bg-base-100 rounded-box shadow border z-50 max-h-120">
+          <ul className="absolute mt-1 w-full max-h-120 overflow-y-auto bg-white rounded-box shadow-2xl border-none z-50">
             <li>
               <a
                 className="dropdown-item dropdown-item-italic"
@@ -40,16 +52,19 @@ export function PokeFilter({ onMoveSelect, selectedMove }) {
                 -- Choose a move --
               </a>
             </li>
-            {moves.map((move) => (
-              <li key={move.name}>
-                <a
-                  className="dropdown-item"
-                  onClick={() => handleSelect(move.name)}
-                >
-                  {capitalizeFirstLetter(move.name)}
-                </a>
-              </li>
-            ))}
+            {moves
+              .slice() // copia para no mutar el estado original
+              .sort((a, b) => a.name.localeCompare(b.name)) // orden alfabético
+              .map((move) => (
+                <li key={move.name}>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleSelect(move.name)}
+                  >
+                    {capitalizeFirstLetter(move.name)}
+                  </a>
+                </li>
+              ))}
           </ul>
         )}
       </div>

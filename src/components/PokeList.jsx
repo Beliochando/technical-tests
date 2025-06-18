@@ -1,40 +1,73 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getPokemonByMove } from "../services/pokeapi";
+import { usePokemonBadges } from "../hooks/usePokemonBadges";
 import { PokeCard } from "./PokeCard";
-import { MdOutlineCatchingPokemon } from "react-icons/md";
+import { MdFlashOn } from "react-icons/md";
 
-export function PokeList({ move }) {
+export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
   const [pokemonList, setPokemonList] = useState([]);
+
+  // Ref para almacenar referencias de cada card por nombre
+  const refs = useRef({});
 
   useEffect(() => {
     if (move) {
       getPokemonByMove(move).then(setPokemonList);
+    } else {
+      setPokemonList([]);
     }
   }, [move]);
+
+  const pokemonWithBadges = usePokemonBadges(pokemonList);
+
+  // Scroll a la card seleccionada cuando cambia selectedPokemon
+  useEffect(() => {
+    if (selectedPokemon && refs.current[selectedPokemon]) {
+      refs.current[selectedPokemon].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  }, [selectedPokemon]);
 
   if (!move) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center text-grape-100 py-10">
-        <MdOutlineCatchingPokemon className="text-[100px] mb-4 text-grape-100/70" />
+        <MdFlashOn className="text-[100px] mb-4 text-grape-100/70" />
         <p className="text-lg">No move selected yet</p>
       </div>
     );
   }
 
+  if (pokemonList.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center text-grape-100 py-10">
+        <MdFlashOn className="text-[100px] mb-4 text-grape-100/70" />
+        <p className="text-lg">No Pokémon found for this move</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      {pokemonList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-full text-center text-grape-100 py-10">
-          <MdOutlineCatchingPokemon className="text-[100px] mb-4 text-grape-100/70" />
-          <p className="text-lg">No move selected yet</p>
+    <div
+      className={`grid gap-4 text-grape-200
+      ${isNarrow ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"}`}
+    >
+      {pokemonWithBadges.map((p) => (
+        <div
+          key={p.name}
+          className={`cursor-pointer rounded-lg transition
+            ${selectedPokemon === p.name ? "bg-blue-400/60" : "hover:bg-blue-100/50"}`}
+          onClick={() => onSelectPokemon(p.name)}
+        >
+          <PokeCard
+            name={p.name}
+            isActive={selectedPokemon === p.name}
+            badges={p.badges}
+          />
         </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-grape-200">
-          {pokemonList.map((p) => (
-            <PokeCard key={p.name} name={p.name} />
-          ))}
-        </div>
-      )}
+      ))}
     </div>
   );
 }

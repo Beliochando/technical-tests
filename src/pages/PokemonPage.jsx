@@ -1,13 +1,12 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export function PokemonPage() {
-  const { name } = useParams();
-
+export function PokemonPage({ name }) {
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold mb-4">Ficha de Pokémon: {name}</h1>
-      <p>Aquí mostrarás la imagen, stats y evolución del Pokémon.</p>
-    </div>
+    <Link to={`/pokemon/${name}`}>
+      <div className="bg-white rounded-lg shadow p-4 hover:scale-105 transition transform">
+        <p className="text-center font-medium capitalize">{name}</p>
+      </div>
+    </Link>
   );
 }

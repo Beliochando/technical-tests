@@ -7,7 +7,7 @@ import { ErrorPage } from "../pages/ErrorPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home />, errorElement: <ErrorPage /> },
-  { path: "/pokemon/:name", element: <PokemonPage /> },
+  { path: "/pokemon", element: <PokemonPage /> },
   { path: "/compare", element: <ComparePage /> },
 ]);
 

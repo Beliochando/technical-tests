@@ -1,27 +1,63 @@
+import { useState, useEffect } from "react";
 import { useMove } from "../contexts/MoveContext";
 import { PokeFilter } from "../components/PokeFilter";
 import { PokeList } from "../components/PokeList";
+import { PokeDetails } from "../components/PokeDetails";
 
 export function Home() {
   const { selectedMove, setSelectedMove } = useMove();
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+
+  useEffect(() => {
+    setSelectedPokemon(null);
+  }, [selectedMove]);
+
+  function handlePokemonClick(name) {
+    if (selectedPokemon === name) {
+      setSelectedPokemon(null);
+    } else {
+      setSelectedPokemon(name);
+    }
+  }
 
   return (
     <div className="flex justify-center min-h-screen">
-      <div className="flex flex-col p-8 max-w-screen-sm md:max-w-screen-xl w-full h-[800px] mb-4 mt-15 bg-base-100/30 rounded-lg">
+      <div className="flex flex-col p-8 max-w-screen-xl w-full h-[800px] mb-4 mt-15 bg-base-100/30 rounded-lg">
         <h1 className="text-3xl font-bold mb-2 text-gradient-gb inline-block">
           Pokémon Explorer
         </h1>
-        <p className="mb-4 text-soft-400">
-          Discover and explore Pokémon, their moves, and abilities all in one
-          place.
-        </p>
-        <hr className="border-white mb-4" />
-        <PokeFilter
-          onMoveSelect={setSelectedMove}
-          selectedMove={selectedMove}
-        />
-        <div className="flex-1 overflow-y-auto bg-white/40 px-6 py-3 rounded-lg h-full">
-          <PokeList move={selectedMove} />
+
+        <div className="flex gap-4 flex-1 overflow-hidden">
+          {/* Columna izquierda con filtro y lista */}
+          <div
+            className={`flex flex-col transition-all duration-300
+            ${selectedPokemon ? "w-1/3" : "w-full"}`}
+          >
+            <PokeFilter
+              onMoveSelect={setSelectedMove}
+              selectedMove={selectedMove}
+            />
+
+            <div className="flex-1  overflow-y-auto bg-white/40 rounded-lg p-6 scrollbar-custom">
+              <PokeList
+                move={selectedMove}
+                onSelectPokemon={handlePokemonClick}
+                selectedPokemon={selectedPokemon}
+                isNarrow={!!selectedPokemon}
+              />
+            </div>
+          </div>
+
+          {/* Detalle del Pokémon a la derecha */}
+          {selectedPokemon && (
+            <div
+              className="w-2/3 overflow-y-auto bg-white/60 rounded-lg p-6 scrollbar-custom"
+              style={{ height: "100%" }}
+              key={selectedPokemon}
+            >
+              <PokeDetails name={selectedPokemon} />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -76,13 +76,44 @@ body::before {
 /*global styles*/
 
 .btn-select {
-  @apply p-2 flex items-center justify-start rounded-lg w-full bg-white/70 border-soft-100 text-grape-400 font-medium hover:bg-white shadow-none px-4 cursor-pointer;
+  @apply p-2 flex items-center justify-start rounded-lg w-full h-12 bg-white/70 border-soft-100 text-grape-400 font-medium hover:bg-white shadow px-4 cursor-pointer;
 }
 
 .dropdown-item {
-  @apply block px-4 py-2 hover:bg-grape-100 text-grape-400;
+  @apply block px-4 py-2 hover:bg-grape-100 text-grape-400 cursor-pointer;
 }
 
 .dropdown-item-italic {
   @apply text-soft-300 italic hover:text-soft-500;
+}
+
+/* estilos para scroll morado personalizado */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: var(--color-grape-200); /* color morado (grape) */
+  border-radius: 8px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-grape-100); /* morado más claro en hover */
+}
+
+/* Firefox */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-grape-200) transparent;
+}
+
+.scrollbar-hidden {
+  overflow: auto; /* o overflow-y: auto / overflow-x: auto según necesites */
+  -ms-overflow-style: none; /* IE y Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari y Opera */
 }
