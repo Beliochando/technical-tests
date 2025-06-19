@@ -3,6 +3,7 @@ import { getAllMoves } from "../services/pokeapi";
 import { useCapitalizeFirstLetter } from "../hooks/useCapitalizeFirstLetter";
 import { MdFlashOn } from "react-icons/md";
 import { FiChevronDown } from "react-icons/fi";
+import { AiOutlineLineChart } from "react-icons/ai";
 
 export function PokeFilter({
   onMoveSelect,
@@ -24,13 +25,12 @@ export function PokeFilter({
   };
 
   return (
-    <div className="mb-2 w-full">
+    <div className="mb-2 w-full ">
       <label className="font-semibold mb-2 text-grape-500 flex items-center gap-2">
         <MdFlashOn className="text-pumpkin-400" />
         Select a move to see which Pokémon can learn it
       </label>
 
-      {/* Flex contenedor para botón y select */}
       <div className="flex items-center gap-2 w-full relative">
         {/* Botón SELECT con dropdown */}
         <div className="relative w-full">
@@ -82,9 +82,9 @@ export function PokeFilter({
         <button
           onClick={onCompareMovesClick}
           type="button"
-          className="text-sm px-3 py-1 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-lg whitespace-nowrap"
+          className="flex justify-center items-center h-[42px] text-md px-3 py-1 bg-bubble-200 text-[#FF00EF] font-medium gap-2 hover:bg-bubble-100 rounded-lg whitespace-nowrap"
         >
-          Comparar moves
+          <AiOutlineLineChart className="text-lg" /> Moves
         </button>
       </div>
     </div>

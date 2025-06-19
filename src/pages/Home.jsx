@@ -4,6 +4,7 @@ import { PokeFilter } from "../components/PokeFilter";
 import { PokeList } from "../components/PokeList";
 import { PokeDetails } from "../components/PokeDetails";
 import { CompareMoves } from "../pages/CompareMoves";
+import { ComparePokemon } from "../pages/ComparePokemon"; // <-- Importamos ComparePokemon
 import { TbFilter, TbFilterX } from "react-icons/tb";
 import { badgeStyles } from "../styles/badgeStyles";
 import { useSortOrder } from "../hooks/useSortOrder";
@@ -14,20 +15,25 @@ export function Home() {
   const { selectedMove, setSelectedMove } = useMove();
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [showCompareMoves, setShowCompareMoves] = useState(false);
+  const [showComparePokemon, setShowComparePokemon] = useState(false); // Estado para mostrar ComparePokemon
+  const [pokemonToCompare, setPokemonToCompare] = useState(null); // Pokémon seleccionado para comparar
   const [badgeFilter, setBadgeFilter] = useState(null);
   const [showBadgeOptions, setShowBadgeOptions] = useState(false);
   const [sortOrder, toggleSortOrder] = useSortOrder(null);
+  const [previousSelectedPokemon, setPreviousSelectedPokemon] = useState(null);
 
   function handleMoveSelectFromFilter(move) {
     setSelectedMove(move);
     setSelectedPokemon(null);
     setBadgeFilter(null);
-    setShowCompareMoves(false); // ocultar comparación si seleccionas otro move
+    setShowCompareMoves(false);
+    setShowComparePokemon(false);
   }
 
   function handleMoveSelectFromDetails(move) {
     setSelectedMove(move);
-    setShowCompareMoves(false); // ocultar comparación
+    setShowCompareMoves(false);
+    setShowComparePokemon(false);
   }
 
   function handlePokemonClick(name) {
@@ -35,7 +41,8 @@ export function Home() {
       setSelectedPokemon(null);
     } else {
       setSelectedPokemon(name);
-      setShowCompareMoves(false); // ocultar comparación al seleccionar Pokémon
+      setShowCompareMoves(false);
+      setShowComparePokemon(false);
     }
   }
 
@@ -53,10 +60,27 @@ export function Home() {
     setBadgeFilter(badge);
   }
 
-  // Nuevo handler para el botón de comparar moves
+  // Mostrar panel comparar moves
   function handleCompareMovesClick() {
     setShowCompareMoves(true);
-    setSelectedPokemon(null); // Ocultar detalle para mostrar comparación
+    setSelectedPokemon(null);
+    setShowComparePokemon(false);
+  }
+
+  // Mostrar panel comparar Pokémon
+  function handleComparePokemonClick(name) {
+    setPreviousSelectedPokemon(selectedPokemon); // guardamos el pokemon que había
+    setPokemonToCompare(name);
+    setShowComparePokemon(true);
+    setSelectedPokemon(null); // Opcional: para ocultar el detalle mientras comparas
+    setShowCompareMoves(false);
+  }
+
+  function handleCloseComparePokemon() {
+    setShowComparePokemon(false);
+    setPokemonToCompare(null);
+    setSelectedPokemon(previousSelectedPokemon); // volvemos a poner el pokemon antes seleccionado
+    setPreviousSelectedPokemon(null);
   }
 
   const badgeOptions = ["legendary", "mythical", "hasHiddenAbility"];
@@ -71,11 +95,16 @@ export function Home() {
         </div>
 
         <div className="flex gap-4 flex-1 overflow-hidden">
-          {/* Columna izquierda */}
+          {/* Columna izquierda: siempre en DOM para transición */}
           <div
-            className={`flex flex-col transition-all duration-300 ${
-              selectedPokemon || showCompareMoves ? "w-1/3" : "w-full"
+            className={`flex flex-col transition-all duration-500 ease-in-out ${
+              showComparePokemon
+                ? "w-0 opacity-0 overflow-hidden"
+                : selectedPokemon || showCompareMoves
+                  ? "w-1/3 opacity-100"
+                  : "w-full opacity-100"
             }`}
+            style={{ minWidth: 0 }}
           >
             <PokeFilter
               onMoveSelect={handleMoveSelectFromFilter}
@@ -161,26 +190,42 @@ export function Home() {
                 badgeFilter={badgeFilter}
                 onSelectPokemon={handlePokemonClick}
                 selectedPokemon={selectedPokemon}
-                isNarrow={!!selectedPokemon || showCompareMoves}
+                isNarrow={
+                  !!selectedPokemon || showCompareMoves || showComparePokemon
+                }
                 sortOrder={sortOrder}
               />
             </div>
           </div>
 
-          {/* Columna derecha: PokeDetails o CompareMoves */}
-          {(selectedPokemon || showCompareMoves) && (
+          {(selectedPokemon || showCompareMoves || showComparePokemon) && (
             <div
-              className="w-2/3 overflow-y-auto rounded-lg scrollbar-custom"
-              style={{ height: "100%" }}
-              key={selectedPokemon || "compareMoves"}
+              className={`overflow-y-auto rounded-lg scrollbar-custom transition-all duration-500 ease-in-out ${
+                showComparePokemon ? "w-full opacity-100" : "w-2/3 opacity-100"
+              }`}
+              style={{ height: "100%", minWidth: 0 }}
+              key={
+                selectedPokemon
+                  ? selectedPokemon
+                  : showCompareMoves
+                    ? "compareMoves"
+                    : "comparePokemon"
+              }
             >
               {showCompareMoves ? (
                 <CompareMoves selectedMove={selectedMove} />
+              ) : showComparePokemon ? (
+                <ComparePokemon
+                  pokemonAName={pokemonToCompare}
+                  selectedMove={selectedMove}
+                  onClose={handleCloseComparePokemon}
+                />
               ) : (
                 <PokeDetails
                   name={selectedPokemon}
                   onSelectMove={handleMoveSelectFromDetails}
                   onSelectPokemon={handlePokemonClick}
+                  onComparePokemon={handleComparePokemonClick}
                   selectedMove={selectedMove}
                 />
               )}

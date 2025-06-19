@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
 import { usePokemonData } from "../hooks/usePokemonData";
 import { useEvolutionList } from "../hooks/useEvolutionList";
@@ -6,8 +7,14 @@ import { MdStars, MdShield } from "react-icons/md";
 import { GiNinjaHead } from "react-icons/gi";
 import { useCapitalizeFirstLetter } from "../hooks/useCapitalizeFirstLetter";
 
-export function PokeDetails({ name, onSelectPokemon, onSelectMove }) {
+export function PokeDetails({
+  name,
+  onSelectPokemon,
+  onSelectMove,
+  onComparePokemon,
+}) {
   const { pokemon, species, evolutionChain, badges } = usePokemonData(name);
+  const [showCompareBtn, setShowCompareBtn] = useState(false);
   const evolutions = useEvolutionList(evolutionChain);
   const capitalize = useCapitalizeFirstLetter();
 
@@ -18,7 +25,7 @@ export function PokeDetails({ name, onSelectPokemon, onSelectMove }) {
     pokemon.sprites.front_default;
 
   return (
-    <div className="text-grape-200 w-full h-full flex flex-col p-2 bg-white/40">
+    <div className="text-grape-200 w-full h-full flex flex-col p-8 bg-white/40">
       <div className="relative">
         <h2 className="text-[35px] font-bold flex items-center gap-2 m-0 p-0">
           <MdOutlineCatchingPokemon className="m-0 p-0" />
@@ -47,12 +54,24 @@ export function PokeDetails({ name, onSelectPokemon, onSelectMove }) {
       </div>
 
       <div className="flex flex-wrap justify-center gap-8 items-start max-w-4xl">
-        <div className="w-48 h-48 flex items-center justify-center">
+        <div
+          className="w-48 h-48 flex items-center justify-center relative"
+          onMouseEnter={() => setShowCompareBtn(true)}
+          onMouseLeave={() => setShowCompareBtn(false)}
+        >
           <img
             src={officialArtworkUrl}
             alt={pokemon.name}
             className="w-full h-full object-contain"
           />
+          {showCompareBtn && (
+            <button
+              className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-pumpkin-400 hover:bg-pumpkin-600 text-white px-3 py-1 rounded-md text-sm shadow-lg"
+              onClick={() => onComparePokemon(name)}
+            >
+              Compare Pokémon
+            </button>
+          )}
         </div>
 
         <div className="flex-1 flex flex-col max-x-md gap-4">
