@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getPokemonByMove } from "../services/pokeapi";
 import { usePokemonBadges } from "../hooks/usePokemonBadges";
-import { useScrollToPokemon } from "../hooks/useScrollToPokemon";
 import { PokeCard } from "./PokeCard";
 import { MdFlashOn } from "react-icons/md";
 
 export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
   const [pokemonList, setPokemonList] = useState([]);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (move) {
@@ -18,21 +18,24 @@ export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
 
   const pokemonWithBadges = usePokemonBadges(pokemonList);
 
-  // SCROLL
-  const [scrollTarget, setScrollTarget] = useState(null);
-
   useEffect(() => {
     if (
       selectedPokemon &&
       pokemonWithBadges.length > 0 &&
       pokemonWithBadges.some((p) => p.name === selectedPokemon)
     ) {
-      setScrollTarget(selectedPokemon);
+      // Aseguramos que el scroll ocurra después del render
+      requestAnimationFrame(() => {
+        if (!containerRef.current) return;
+        const el = containerRef.current.querySelector(
+          `[data-pokemon-id="${selectedPokemon}"]`
+        );
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
     }
   }, [selectedPokemon, pokemonWithBadges]);
-
-  // Hook Scroll
-  useScrollToPokemon(scrollTarget);
 
   if (!move) {
     return (
@@ -54,6 +57,7 @@ export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
 
   return (
     <div
+      ref={containerRef}
       className={`grid gap-4 text-grape-200
       ${isNarrow ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"}`}
     >
