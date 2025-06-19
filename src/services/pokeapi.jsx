@@ -31,3 +31,23 @@ export async function getEvolutionChain(url) {
   const res = await fetch(url);
   return await res.json();
 }
+
+// ✅ NUEVA FUNCIÓN: cuenta cuántos Pokémon por tipo aprenden un movimiento
+export async function getTypeCountsForMove(moveName) {
+  const pokemonList = await getPokemonByMove(moveName);
+
+  const limit = 100;
+  const limitedList = pokemonList.slice(0, limit);
+
+  const detailsPromises = limitedList.map((p) => getPokemonDetails(p.name));
+  const details = await Promise.all(detailsPromises);
+
+  const typeCounts = {};
+
+  details.forEach((pokemon) => {
+    const mainType = pokemon.types[0]?.type.name || "unknown";
+    typeCounts[mainType] = (typeCounts[mainType] || 0) + 1;
+  });
+
+  return typeCounts;
+}
