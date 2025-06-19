@@ -66,10 +66,11 @@ export function PokeDetails({
           />
           {showCompareBtn && (
             <button
-              className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-pumpkin-400 hover:bg-pumpkin-600 text-white px-3 py-1 rounded-md text-sm shadow-lg"
               onClick={() => onComparePokemon(name)}
+              className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-pumpkin-400 hover:bg-pumpkin-500 rounded-full shadow-md transition-colors duration-200"
             >
-              Compare Pokémon
+              <MdOutlineCatchingPokemon className="w-4 h-4 text-white" />
+              Compare
             </button>
           )}
         </div>

@@ -1,39 +1,85 @@
 [Español](/README.es.md) | [English](/README.en.md) | [Galego]()
 
-# Frontend Developer Test
+# 🧭 Pokémon Explorer
 
-This is a template project for the Frontend technical test.
+**Pokémon Explorer** is an interactive web application to explore and compare Pokémon based on their moves, stats, special badges, and more. Perfect for casual fans and competitive players who need a dynamic and visual tool.
 
-Below are the milestones of the test. Keep in mind that the actual test is versatile and will be requested after {x} days, where you will need to explain the code and make real-time changes based on the expected level.
+---
 
-The API we will use for the test is: **https://pokeapi.co/**
+## ✅ Implemented Features
 
-**Pre-installed libraries we use:**
+### Basic
 
-- Svelte
-- Shadcn
-- Tailwind
-- D3.js
+- [x] **Select a Move** and see all Pokémon that learn it.
+- [x] **View detailed Pokémon profile** including:
+  - Official artwork.
+  - Base stats (HP, Attack, Defense, etc.).
+  - The moves that Pokémon can learn.
+  - Special badges (Legendary, Mythical, Hidden Ability).
+  - Internal filter to search among its moves.
 
-## Technical Test
+### Intermediate
 
-### Milestones
+- [x] **Contextual navigation**:
+  - From a Pokémon’s profile, click a move to see Pokémon that learn that move.
+  - View and navigate directly to evolutions (if any).
+  - Browse between Pokémon profiles without leaving the current view.
+- [x] **List sorting and filtering**:
+  - Alphabetical order A → Z / Z → A / no sorting.
+  - Filters by badges:
+    - Legendary
+    - Mythical
+    - Has Hidden Ability
+  - Filters are visually indicated on Pokémon cards.
+- [x] **Smart scrolling**:
+  - When selecting a Pokémon anywhere in the app, the list auto-scrolls and centers the card for better visual orientation.
 
-- [ ] View Pokémon by types (first 20)
-- [ ] View a list of Pokémon of a type sorted by size (first 20)
-- [ ] View a Pokémon's profile
-- [ ] Lists as tables
-- [ ] Lists as charts
+### Advanced
 
-### Considerations
+- [x] **Compare two Pokémon**:
+  - Select a Pokémon and then another to compare their base stats visually.
+  - Bar chart showing 5 key stats.
+  - Retains previously selected Pokémon to return to after comparison.
 
-Concepts to apply that will be highly valued during evaluation.
+### Very Advanced
 
-- Loading state fetching
-- State management
-- Bind states components
-- Semantic HTML
-- Infinite scroll
-- Use of libraries that we use in our stack
-- UI/UX presentation
-- Separate into components
+- [x] **Compare two Moves**:
+  - Activate move comparison from the move filter.
+  - Bar chart showing number of Pokémon by primary type that can learn each move.
+
+---
+
+## 🧪 Technologies Used
+
+| Technology             | Purpose                                       |
+| ---------------------- | --------------------------------------------- |
+| **React + TypeScript** | Robust, typed UI development                  |
+| **TailwindCSS**        | Utility-first styling for fast custom design  |
+| **DaisyUI**            | Accessible UI components built on TailwindCSS |
+| **React Icons**        | Icons from `react-icons/tb`, `lia`, `bi`      |
+| **Chart.js**           | Data visualization with bar charts            |
+| **Context API**        | Global state management for selected moves    |
+| **Custom Hooks**       | Reusable logic such as alphabetical sorting   |
+
+---
+
+## 🚀 Installation and Running
+
+### Requirements
+
+- Node.js >= 18
+- pnpm (recommended)
+
+### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Beliochando/technical-tests.git
+cd pokemon-explorer
+
+# 2. Install dependencies
+pnpm install
+
+# 3. Run in development mode
+pnpm dev
+```

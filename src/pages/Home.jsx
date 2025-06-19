@@ -62,7 +62,7 @@ export function Home() {
 
   // Mostrar panel comparar moves
   function handleCompareMovesClick() {
-    setShowCompareMoves(true);
+    setShowCompareMoves(!showCompareMoves);
     setSelectedPokemon(null);
     setShowComparePokemon(false);
   }

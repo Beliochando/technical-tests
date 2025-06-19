@@ -89,7 +89,7 @@ export function CompareMoves() {
       <h2 className="text-2xl font-semibold text-grape-400 mb-4">
         Compare moves
       </h2>
-      <div className="flex flex-col items-center justify-center mt-15 h-full ">
+      <div className="flex flex-col items-center justify-start mt-15 h-full ">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8">
           {/* Selector Movimiento Actual con círculo dentro del label */}
           <div className="flex flex-col">
