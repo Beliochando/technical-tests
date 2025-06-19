@@ -20,7 +20,7 @@ export function PokeFilter({ onMoveSelect, selectedMove }) {
   };
 
   return (
-    <div className="mb-4 w-full">
+    <div className="mb-2 w-full">
       <label className="font-semibold mb-2 text-grape-500 flex items-center gap-2">
         <MdFlashOn className="text-pumpkin-400" />
         Select a move to see which Pokémon can learn it
