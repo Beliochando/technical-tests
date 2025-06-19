@@ -5,32 +5,69 @@ import {
   getEvolutionChain,
 } from "../services/pokeapi";
 
+const pokemonDataCache = new Map();
+
 export function usePokemonData(name) {
-  const [pokemon, setPokemon] = useState(null);
-  const [species, setSpecies] = useState(null);
-  const [evolutionChain, setEvolutionChain] = useState(null);
+  const [data, setData] = useState({
+    pokemon: null,
+    species: null,
+    evolutionChain: null,
+    badges: null,
+  });
 
   useEffect(() => {
-    if (!name) return;
+    if (!name) {
+      setData({
+        pokemon: null,
+        species: null,
+        evolutionChain: null,
+        badges: null,
+      });
+      return;
+    }
 
-    setPokemon(null);
-    setSpecies(null);
-    setEvolutionChain(null);
+    let isCancelled = false;
 
-    getPokemonDetails(name).then((p) => {
-      setPokemon(p);
-      if (p.species?.url) {
-        getPokemonSpecies(p.species.url).then((speciesData) => {
-          setSpecies(speciesData);
-          if (speciesData.evolution_chain?.url) {
-            getEvolutionChain(speciesData.evolution_chain.url).then(
-              setEvolutionChain
-            );
-          }
-        });
+    async function fetchData() {
+      if (pokemonDataCache.has(name)) {
+        if (!isCancelled) setData(pokemonDataCache.get(name));
+        return;
       }
-    });
+
+      const pokemon = await getPokemonDetails(name);
+      const hasHiddenAbility = pokemon.abilities.some((a) => a.is_hidden);
+
+      let species = null;
+      let badges = null;
+      let evolutionChain = null;
+
+      if (pokemon.species?.url) {
+        species = await getPokemonSpecies(pokemon.species.url);
+
+        badges = {
+          legendary: species.is_legendary,
+          mythical: species.is_mythical,
+          hasHiddenAbility,
+        };
+
+        if (species.evolution_chain?.url) {
+          evolutionChain = await getEvolutionChain(species.evolution_chain.url);
+        }
+      }
+
+      const fullData = { pokemon, species, evolutionChain, badges };
+
+      pokemonDataCache.set(name, fullData);
+
+      if (!isCancelled) setData(fullData);
+    }
+
+    fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [name]);
 
-  return { pokemon, species, evolutionChain };
+  return data;
 }

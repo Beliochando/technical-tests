@@ -1,5 +1,4 @@
 import { MdOutlineCatchingPokemon } from "react-icons/md";
-import { usePokemonBadges } from "../hooks/usePokemonBadges";
 import { usePokemonData } from "../hooks/usePokemonData";
 import { useEvolutionList } from "../hooks/useEvolutionList";
 import { extractIdFromUrl } from "../utils";
@@ -8,37 +7,37 @@ import { GiNinjaHead } from "react-icons/gi";
 import { useCapitalizeFirstLetter } from "../hooks/useCapitalizeFirstLetter";
 
 export function PokeDetails({ name, onSelectPokemon, onSelectMove }) {
-  const { pokemon, species, evolutionChain } = usePokemonData(name);
+  const { pokemon, species, evolutionChain, badges } = usePokemonData(name);
   const evolutions = useEvolutionList(evolutionChain);
-  const badgesData = usePokemonBadges(name ? [{ name }] : []);
-  const badge = badgesData.length > 0 ? badgesData[0].badges : null;
   const capitalize = useCapitalizeFirstLetter();
 
   if (!pokemon) return <p className="text-soft-200">Loading Pokémon...</p>;
 
-  const officialArtworkUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+  const officialArtworkUrl =
+    pokemon.sprites.other?.["official-artwork"]?.front_default ||
+    pokemon.sprites.front_default;
 
   return (
-    <div className="text-grape-200 w-full h-full flex flex-col p-2">
+    <div className="text-grape-200 w-full h-full flex flex-col p-2 bg-white/40">
       <div className="relative">
         <h2 className="text-[35px] font-bold flex items-center gap-2 m-0 p-0">
           <MdOutlineCatchingPokemon className="m-0 p-0" />
           {pokemon.name.toUpperCase()}
         </h2>
 
-        {badge && (
+        {badges && (
           <div className="absolute top-0 right-0 flex gap-2">
-            {badge.legendary && (
+            {badges.legendary && (
               <span className="badge badge-soft badge-error text-sm">
                 <MdStars size={14} /> Legendary
               </span>
             )}
-            {badge.mythical && (
+            {badges.mythical && (
               <span className="badge badge-soft badge-warning text-sm">
                 <MdShield size={14} /> Mythical
               </span>
             )}
-            {badge.hasHiddenAbility && (
+            {badges.hasHiddenAbility && (
               <span className="badge badge-soft badge-info text-sm">
                 <GiNinjaHead size={14} /> Hidden Ability
               </span>

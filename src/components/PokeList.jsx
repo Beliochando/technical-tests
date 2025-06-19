@@ -1,14 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getPokemonByMove } from "../services/pokeapi";
 import { usePokemonBadges } from "../hooks/usePokemonBadges";
+import { useScrollToPokemon } from "../hooks/useScrollToPokemon";
 import { PokeCard } from "./PokeCard";
 import { MdFlashOn } from "react-icons/md";
 
 export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
   const [pokemonList, setPokemonList] = useState([]);
-
-  // Ref para almacenar referencias de cada card por nombre
-  const refs = useRef({});
 
   useEffect(() => {
     if (move) {
@@ -20,16 +18,21 @@ export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
 
   const pokemonWithBadges = usePokemonBadges(pokemonList);
 
-  // Scroll a la card seleccionada cuando cambia selectedPokemon
+  // SCROLL
+  const [scrollTarget, setScrollTarget] = useState(null);
+
   useEffect(() => {
-    if (selectedPokemon && refs.current[selectedPokemon]) {
-      refs.current[selectedPokemon].scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest",
-      });
+    if (
+      selectedPokemon &&
+      pokemonWithBadges.length > 0 &&
+      pokemonWithBadges.some((p) => p.name === selectedPokemon)
+    ) {
+      setScrollTarget(selectedPokemon);
     }
-  }, [selectedPokemon]);
+  }, [selectedPokemon, pokemonWithBadges]);
+
+  // Hook Scroll
+  useScrollToPokemon(scrollTarget);
 
   if (!move) {
     return (
@@ -57,9 +60,7 @@ export function PokeList({ move, onSelectPokemon, selectedPokemon, isNarrow }) {
       {pokemonWithBadges.map((p) => (
         <div
           key={p.name}
-          ref={(el) => {
-            refs.current[p.name] = el;
-          }}
+          data-pokemon-id={p.name}
           className={`cursor-pointer rounded-lg transition
           ${selectedPokemon === p.name ? "bg-blue-400/60" : "hover:bg-blue-100/50"}`}
           onClick={() => onSelectPokemon(p.name)}

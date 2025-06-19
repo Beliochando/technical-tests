@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMove } from "../contexts/MoveContext";
 import { PokeFilter } from "../components/PokeFilter";
 import { PokeList } from "../components/PokeList";
@@ -8,9 +8,14 @@ export function Home() {
   const { selectedMove, setSelectedMove } = useMove();
   const [selectedPokemon, setSelectedPokemon] = useState(null);
 
-  useEffect(() => {
+  function handleMoveSelectFromFilter(move) {
+    setSelectedMove(move);
     setSelectedPokemon(null);
-  }, [selectedMove]);
+  }
+
+  function handleMoveSelectFromDetails(move) {
+    setSelectedMove(move);
+  }
 
   function handlePokemonClick(name) {
     if (selectedPokemon === name) {
@@ -34,11 +39,11 @@ export function Home() {
             ${selectedPokemon ? "w-1/3" : "w-full"}`}
           >
             <PokeFilter
-              onMoveSelect={setSelectedMove}
+              onMoveSelect={handleMoveSelectFromFilter}
               selectedMove={selectedMove}
             />
 
-            <div className="flex-1  overflow-y-auto bg-white/40 rounded-lg p-6 scrollbar-custom">
+            <div className="flex-1 overflow-y-auto rounded-lg p-6 scrollbar-custom">
               <PokeList
                 move={selectedMove}
                 onSelectPokemon={handlePokemonClick}
@@ -55,7 +60,11 @@ export function Home() {
               style={{ height: "100%" }}
               key={selectedPokemon}
             >
-              <PokeDetails name={selectedPokemon} />
+              <PokeDetails
+                name={selectedPokemon}
+                onSelectMove={handleMoveSelectFromDetails}
+                selectedMove={selectedMove}
+              />
             </div>
           )}
         </div>
