@@ -63,6 +63,7 @@ export function Home() {
               <PokeDetails
                 name={selectedPokemon}
                 onSelectMove={handleMoveSelectFromDetails}
+                onSelectPokemon={handlePokemonClick}
                 selectedMove={selectedMove}
               />
             </div>
